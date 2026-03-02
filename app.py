@@ -93,7 +93,7 @@ if run_btn:
         scaler = joblib.load(scaler_path)
 
         # Load & agregasi data historis
-        df_hist = load_and_aggregate('Variations_Food_Prices_Italian_Supermarkets.csv', category)
+        df_hist = load_and_aggregate('data_aggregated.csv', category)
 
         # Jalankan forecast
         df_forecast = run_forecast(df_hist, model, scaler, horizon)

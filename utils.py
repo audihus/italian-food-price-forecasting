@@ -38,22 +38,10 @@ CATEGORY_COLORS = {
 # =============================================================================
 
 @st.cache_data  # ← CSV hanya dibaca sekali, hasil di-cache
-def load_and_aggregate(csv_path: str, category: str) -> pd.DataFrame:
-    """Load CSV, filter kategori, agregasi harian."""
+def load_and_aggregate(csv_path, category):
     df = pd.read_csv(csv_path)
-    df['date'] = pd.to_datetime(df['date'])
-
-    df_daily = (
-        df[df['COICOP4'] == category]
-        .groupby(pd.Grouper(key='date', freq='D'))['price']
-        .mean()
-        .reset_index()
-        .rename(columns={'date': 'day', 'price': 'avg_price'})
-    )
-
-    # Isi gap harian dengan forward fill
-    df_daily = df_daily.set_index('day').asfreq('D').ffill().reset_index()
-    return df_daily
+    df['day'] = pd.to_datetime(df['day'])  # ← tambah ini
+    return df[df['COICOP4'] == category][['day', 'avg_price']].reset_index(drop=True)
 
 
 def create_features(data: pd.DataFrame, lags: list = [1, 2, 3, 4, 5, 6, 7]) -> pd.DataFrame:
